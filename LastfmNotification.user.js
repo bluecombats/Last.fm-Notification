@@ -8,7 +8,7 @@
 // @include       http://www.last.fm/*
 // @include       http*last.fm/*
 // @include       http*www.last.fm/*
-// @version        0.3
+// @version        0.4
 // ==/UserScript==
 try{
     function LastFMGrowlinterval(originalTitle,artist,track){
