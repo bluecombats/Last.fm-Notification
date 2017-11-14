@@ -14,7 +14,7 @@ try{
     function LastFMGrowlinterval(originalTitle,artist,track){
         var creator,name;
 		//console.log("current Title:"+newTitle);
-        console.log("original title: "+originalTitle);
+        //console.log("original title: "+originalTitle);
         if(document.getElementsByClassName("player-bar-artist-name")[0]){
 			creator=document.getElementsByClassName("player-bar-artist-name")[0].innerHTML;
             name=document.getElementsByClassName("player-bar-track-name")[0].innerHTML;
@@ -26,9 +26,9 @@ try{
         //var  albumImage=null;
         //console.log("ARTIST "+creator);
         //console.log("TRACK "+name);
-        if (creator !== originalTitle) {
+        if ((creator !== originalTitle)||(creator!=="Unknown")) {
             originalTitle=creator;
-            console.log('Sent Last.fm notification');
+            //console.log('Sent Last.fm notification');
 			var notification=new Notification(creator,{
 				icon: 'http://www.growlforwindows.com/gfw/images/plugins/lastfm.png',
 				body: name,
@@ -39,7 +39,7 @@ try{
             scrobble="UNKNOWN";
         }
         else{
-            console.log('same song');
+            //console.log('same song');
         }
         return [originalTitle,creator,name];
     }
@@ -74,7 +74,7 @@ try{
         }
     });
 	originalTitle = "not playing yet";
-	console.log("Original Title:"+originalTitle);
+	//console.log("Original Title:"+originalTitle);
     scrobble="UNKNOWN";
     //var count=0;
     MyVar=setInterval(function(){
@@ -94,6 +94,6 @@ catch(err){
     txt+="Error description: " + err.message + "\n";
     txt+="Error line"+err.lineNumber+ "\n";
     txt+="Click OK to continue.\n\n";
-    console.log(txt);
+    //console.log(txt);
 }
-console.log("end of loop");
+//console.log("end of loop");
