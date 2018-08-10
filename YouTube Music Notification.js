@@ -70,29 +70,29 @@ function removeHtml(tweet){
 	return tweet;
 }
 //Main Script starts here
-var originalTitle,scrobble,creator="Unknown",track="Unknown";
-document.addEventListener('DOMContentLoaded', function () {
-	if (!Notification) {
-		alert('Desktop notifications not available in your browser. Try Chromium.');
-		return;
-	}
-	if (Notification.permission !== "granted"){
-		Notification.requestPermission();
-	}
+Notification.requestPermission().then(function(result) {
+  if (result === 'denied') {
+    console.log('Permission wasn\'t granted. Allow a retry.');
+    return;
+  }
+  if (result === 'default') {
+    console.log('The permission request was dismissed.');
+    return;
+  }
+  originalTitle = "not playing yet";
+	//console.log("Original Title:"+originalTitle);
+	scrobble="UNKNOWN";
+	//var count=0;
+	MyVar=setInterval(function(){
+		var returnVar=LastFMGrowlinterval(originalTitle,creator,track);
+		originalTitle=returnVar[0];
+		creator=returnVar[1];
+		track=returnVar[2];
+		//count++;
+		//console.log(count);
+		//if(count>20){
+			//clearInterval(MyVar);
+		//}
+	},3000);
 });
-originalTitle = "not playing yet";
-//console.log("Original Title:"+originalTitle);
-scrobble="UNKNOWN";
-//var count=0;
-MyVar=setInterval(function(){
-	var returnVar=LastFMGrowlinterval(originalTitle,creator,track);
-	originalTitle=returnVar[0];
-	creator=returnVar[1];
-	track=returnVar[2];
-	//count++;
-	//console.log(count);
-	//if(count>20){
-		//clearInterval(MyVar);
-	//}
-},3000);
 //console.log("end of loop");
