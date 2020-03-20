@@ -11,8 +11,6 @@
 function LastFMGrowlinterval(originalTitle,artist,track){
 	try{
         	var creator,name,ArtistPic;
-		//console.log("current Title:"+newTitle);
-        	//console.log("original title: "+originalTitle);
 		if(document.getElementsByTagName("ytmusic-player-bar")[0]){
 			name=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[0].innerHTML;
 			creator=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1].getElementsByTagName("a")[0].innerHTML;
@@ -22,9 +20,6 @@ function LastFMGrowlinterval(originalTitle,artist,track){
             		creator="Unknown";
             		name="Unknown";
 		}
-		//var  albumImage=null;
-		//console.log("ARTIST "+creator);
-		//console.log("TRACK "+name);
 		if ((creator !== originalTitle)&&(creator!=="Unknown")) {
 			originalTitle=creator;
 			//console.log('Sent Last.fm notification');
@@ -81,7 +76,7 @@ Notification.requestPermission().then(function(result) {
   }
   originalTitle = "not playing yet";
 	//console.log("Original Title:"+originalTitle);
-	scrobble="UNKNOWN";
+	var scrobble="UNKNOWN",originalTitle,creator,track;
 	//var count=0;
 	MyVar=setInterval(function(){
 		var returnVar=LastFMGrowlinterval(originalTitle,creator,track);
