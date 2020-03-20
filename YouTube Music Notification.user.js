@@ -6,11 +6,11 @@
 // @grant			none
 // @include       https://music.youtube.com/*
 // @include       http*music.youtube.com/*
-// @version        1.0
+// @version        1.1
 // ==/UserScript==
 function LastFMGrowlinterval(originalTitle,artist,track){
 	try{
-        	var creator,name,ArtistPic;
+        	var creator,name,ArtistPic,scrobble;
 		if(document.getElementsByTagName("ytmusic-player-bar")[0]){
 			name=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[0].innerHTML;
 			creator=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1].getElementsByTagName("a")[0].innerHTML;
@@ -27,9 +27,6 @@ function LastFMGrowlinterval(originalTitle,artist,track){
 				icon: ArtistPic,
 				body: name,
 			});
-			//notification.onclick = function () {
-			//window.open("http://stackoverflow.com/a/13328397/1269037");
-			//};
 			scrobble="UNKNOWN";
 		}
         	else{
@@ -38,7 +35,7 @@ function LastFMGrowlinterval(originalTitle,artist,track){
 		return [originalTitle,creator,name];
     	}
 	catch(err){
-		txt="There was an error on this page.\n";
+		var txt="There was an error on this page.\n";
 		txt+="Error description: " + err.message + "\n";
 		txt+="Error line"+err.lineNumber+ "\n";
 		txt+="Click OK to continue.\n\n";
@@ -66,17 +63,17 @@ function removeHtml(tweet){
 }
 //Main Script starts here
 Notification.requestPermission().then(function(result) {
-  if (result === 'denied') {
-    console.log('Permission wasn\'t granted. Allow a retry.');
-    return;
-  }
-  if (result === 'default') {
-    console.log('The permission request was dismissed.');
-    return;
-  }
-  originalTitle = "not playing yet";
-	//console.log("Original Title:"+originalTitle);
+	if (result === 'denied') {
+		console.log('Permission wasn\'t granted. Allow a retry.');
+		return;
+	}
+	if (result === 'default') {
+		console.log('The permission request was dismissed.');
+		return;
+	}
 	var scrobble="UNKNOWN",originalTitle,creator,track;
+	originalTitle = "not playing yet";
+	//console.log("Original Title:"+originalTitle);
 	//var count=0;
 	MyVar=setInterval(function(){
 		var returnVar=LastFMGrowlinterval(originalTitle,creator,track);
