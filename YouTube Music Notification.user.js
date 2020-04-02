@@ -1,38 +1,48 @@
 // ==UserScript==
-// @name          Youtub Music Notification JPC
-// @namespace     http://www.bluecombats.blogspot.com
-// @description	  Sends notifications from the youtube music website when the currently playing track changes. Changes to when track is changed, also scrobble notification should work better.
-// @icon      		https://s.ytimg.com/yts/img/music/web/favicon-vflntJm16.ico
-// @grant			none
-// @include       https://music.youtube.com/*
-// @include       http*music.youtube.com/*
-// @version        1.1
+// @name		Youtube Music Notification JPC
+// @author		James Clare
+// @namespace		http://www.bluecombats.blogspot.com
+// @updateURL		https://github.com/bluecombats/Last.fm-Notification/raw/master/YouTube%20Music%20Notification.user.js
+// @downloadURL		https://github.com/bluecombats/Last.fm-Notification/raw/master/YouTube%20Music%20Notification.user.js
+// @supportURL		https://github.com/bluecombats/Last.fm-Notification/issues
+// @run-at		document-end
+// @description		Sends notifications from the youtube music website when the currently playing track changes. Changes to when track is changed, also scrobble notification should work better.
+// @icon		https://s.ytimg.com/yts/img/music/web/favicon-vflntJm16.ico
+// @grant		none
+// @include		https://music.youtube.com/*
+// @include		http*music.youtube.com/*
+// @version		1.2
 // ==/UserScript==
-function LastFMGrowlinterval(originalTitle,artist,track){
+function LastFMGrowlinterval(title,artist,track){
 	try{
-        	var creator,name,ArtistPic,scrobble;
+        	var ArtistPic,options,notification;
 		if(document.getElementsByTagName("ytmusic-player-bar")[0]){
-			name=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[0].innerHTML;
-			creator=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1].getElementsByTagName("a")[0].innerHTML;
+			track=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[0].innerHTML;
+			artist=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1].getElementsByTagName("a")[0].innerHTML;
 			ArtistPic=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("img")[0].src;
         	}
         	else{
-            		creator="Unknown";
-            		name="Unknown";
+            		track="Unknown";
+            		artist="Unknown";
 		}
-		if ((creator !== originalTitle)&&(creator!=="Unknown")) {
-			originalTitle=creator;
+		if ((artist !== title)&&(artist!=="Unknown")) {
 			//console.log('Sent Last.fm notification');
-			var notification=new Notification(creator,{
-				icon: ArtistPic,
-				body: name,
-			});
-			scrobble="UNKNOWN";
+			//https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification
+			title=artist;
+			options ={
+				body:track
+				//renotify:true
+				//,requireInteraction: true
+				,tag:"YoutubeMusic Notification"
+				,icon:ArtistPic
+				,silent:true
+			}
+			notification=new Notification(title,options);
 		}
         	else{
             		//console.log('same song');
 		}
-		return [originalTitle,creator,name];
+		return [title,artist,track];
     	}
 	catch(err){
 		var txt="There was an error on this page.\n";
@@ -42,49 +52,41 @@ function LastFMGrowlinterval(originalTitle,artist,track){
 		console.log(txt);
 	}
 }
-function removeHtml(tweet){
-	//find 1st occurence of <
-	var lessthan=tweet.indexOf("<");
-	while(lessthan!=-1){
-		//console.log("check: "+tweet);
-		//find 1st occurence of >
-		var greaterthan=tweet.indexOf(">");
-		//the html stuff
-		var htmlstuff=tweet.substring(lessthan,greaterthan+1);
-		//replacing html with nothing
-		//console.log("<:"+lessthan+" >:"+greaterthan+" htmlstuff:"+htmlstuff);
-		tweet=tweet.replace(htmlstuff,"");
-		//console.log("newtweet: "+tweet);
-		//update lessthan
-		lessthan=tweet.indexOf("<");
+function NotifyCheck() {
+	// Let's check if the browser supports notifications
+	if (!("Notification" in window)) {
+		console.log("This browser does not support desktop notification");
+		return false;
 	}
-	//console.log("end of if statements");
-	return tweet;
+	// Let's check whether notification permissions have alredy been granted
+	else if (Notification.permission === "granted") {
+		console.log("notification permission is already granted");
+		return true;
+	}
+	// Otherwise, we need to ask the user for permission
+	else if (Notification.permission !== 'denied' || Notification.permission === "default") {
+		Notification.requestPermission(function (permission) {
+			// If the user accepts, let's create a notification
+			if (permission === "granted") {
+				console.log("permission is granted");
+				return true;
+			}
+		});
+	}
+	// At last, if the user has denied notifications, and you 
+	// want to be respectful there is no need to bother them any more.
 }
 //Main Script starts here
-Notification.requestPermission().then(function(result) {
-	if (result === 'denied') {
-		console.log('Permission wasn\'t granted. Allow a retry.');
-		return;
-	}
-	if (result === 'default') {
-		console.log('The permission request was dismissed.');
-		return;
-	}
-	var scrobble="UNKNOWN",originalTitle,creator,track;
-	originalTitle = "not playing yet";
-	//console.log("Original Title:"+originalTitle);
-	//var count=0;
+var check=NotifyCheck();
+var MyVar, returnVar, title, artist, track;
+if(check===true){
+	title = "not playing yet";
+	//console.log("Original Title:"+title);
 	MyVar=setInterval(function(){
-		var returnVar=LastFMGrowlinterval(originalTitle,creator,track);
-		originalTitle=returnVar[0];
-		creator=returnVar[1];
+		returnVar=LastFMGrowlinterval(title,artist,track);
+		title=returnVar[0];
+		artist=returnVar[1];
 		track=returnVar[2];
-		//count++;
-		//console.log(count);
-		//if(count>20){
-			//clearInterval(MyVar);
-		//}
 	},3000);
-});
+};
 //console.log("end of loop");
