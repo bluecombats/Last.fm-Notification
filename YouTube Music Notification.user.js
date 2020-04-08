@@ -11,11 +11,11 @@
 // @grant		none
 // @include		https://music.youtube.com/*
 // @include		http*music.youtube.com/*
-// @version		1.2
+// @version		1.3
 // ==/UserScript==
-function LastFMGrowlinterval(title,artist,track){
+function LastFMGrowlinterval(title){
 	try{
-        	var ArtistPic,options,notification;
+        	var track, artist, ArtistPic, options, notification;
 		if(document.getElementsByTagName("ytmusic-player-bar")[0]){
 			track=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[0].innerHTML;
 			artist=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1].getElementsByTagName("a")[0].innerHTML;
@@ -42,7 +42,7 @@ function LastFMGrowlinterval(title,artist,track){
         	else{
             		//console.log('same song');
 		}
-		return [title,artist,track];
+		return title;
     	}
 	catch(err){
 		var txt="There was an error on this page.\n";
@@ -78,15 +78,11 @@ function NotifyCheck() {
 }
 //Main Script starts here
 var check=NotifyCheck();
-var MyVar, returnVar, title, artist, track;
+var title = "not playing yet";
 if(check===true){
-	title = "not playing yet";
 	//console.log("Original Title:"+title);
-	MyVar=setInterval(function(){
-		returnVar=LastFMGrowlinterval(title,artist,track);
-		title=returnVar[0];
-		artist=returnVar[1];
-		track=returnVar[2];
+	var MyVar=setInterval(function(){
+		title=LastFMGrowlinterval(title);
 	},3000);
 };
 //console.log("end of loop");
