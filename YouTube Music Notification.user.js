@@ -11,14 +11,21 @@
 // @grant		none
 // @include		https://music.youtube.com/*
 // @include		http*music.youtube.com/*
-// @version		1.3
+// @version		1.4
 // ==/UserScript==
 function LastFMGrowlinterval(title){
-	try{
-        	var track, artist, ArtistPic, options, notification;
-		if(document.getElementsByTagName("ytmusic-player-bar")[0]){
-			track=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[0].innerHTML;
-			artist=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1].getElementsByTagName("a")[0].innerHTML;
+   try{
+      var track, artist, ArtistPic, options, notification;
+         if(document.getElementsByTagName("ytmusic-player-bar")[0]){
+            if (document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[0]){
+                track=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[0].innerHTML;
+            }else{track="Unknown"}
+            if(document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1]){
+                //console.log(document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1].innerHTML);
+                if(document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1].getElementsByTagName("a")[0]){
+                   artist=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("yt-formatted-string")[1].getElementsByTagName("a")[0].innerHTML;
+                }else{artist="Unknown"}
+            }else{artist="Unknown"}
 			ArtistPic=document.getElementsByTagName("ytmusic-player-bar")[0].getElementsByTagName("img")[0].src;
         	}
         	else{
@@ -33,7 +40,7 @@ function LastFMGrowlinterval(title){
 				body:track
 				//renotify:true
 				//,requireInteraction: true
-				,tag:"YoutubeMusic Notification"
+				//,tag:"YoutubeMusic Notification"
 				,icon:ArtistPic
 				,silent:true
 			}
